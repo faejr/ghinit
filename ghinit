@@ -1,0 +1,130 @@
+#!/bin/bash
+# Example
+# ghinit -d "A simple way to perform your initial commit to github with a single terminal command!" -c --push
+
+if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
+	echo -e "Usage:\nghinit [-cp] [-n reponame] [-d description] [-m commitmsg] [--push]"
+	exit 0
+fi
+
+if [ -z "$GH_ACCESS_TOKEN" ] || [ -z "$GH_USERNAME" ]; then
+	echo "The environment variables GH_USERNAME and GH_ACCESS_TOKEN are not properly set"
+	exit 1
+fi
+
+PRIVATE="false"
+COMMIT=FALSE
+PUSH=FALSE
+
+while [[ $# -gt 0 ]]
+do
+key="$1"
+
+case $key in
+    -n|--name)
+    REPONAME="$2"
+    shift
+    shift
+    ;;
+    -m|--message)
+    COMMITMSG="$2"
+    shift
+    shift
+    ;;
+    -p|--private)
+    PRIVATE="true"
+    shift
+    ;;
+    -d|--description)
+    DESC="$2"
+    shift
+    shift
+    ;;
+    -c|--commit)
+    COMMIT=TRUE
+    shift
+    ;;
+    --push)
+    PUSH=TRUE
+    shift
+    ;;
+    *)
+    POSITIONAL+=("$1")
+    shift
+    ;;
+esac
+done
+set -- "${POSITIONAL[@]}"
+
+if [ -z "$REPONAME" ]; then
+    REPONAME=${PWD##*/}
+fi
+
+function createRepo {
+	echo "Setting up github repo $REPONAME..."
+
+	OUTPUT=$(curl -s -u "$GH_USERNAME:$GH_ACCESS_TOKEN" -X POST -d "{ \"name\": \"$REPONAME\", \"description\": \"$DESC\", \"private\": $PRIVATE }" https://api.github.com/user/repos)
+
+	SSH_URL=$(echo "$OUTPUT" | awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/\042'ssh_url'\042/){print $(i+1)":"$(i+2) }}}' | tr -d '" ' | sed -n 1p)
+
+	if [ ! -f ".git" ]; then
+		git init
+	else
+		echo "Git already initialized, skipping step"
+	fi
+
+	git remote add origin $SSH_URL
+
+	if [ $COMMIT ]; then
+		commit
+	else
+		finish
+	fi
+}
+
+function commit {
+	if [ ! -f ".gitignore" ]; then
+		read -r -p ".gitignore doesn't exist, would you still like to commit add all? [Y/n]" response
+		case "$response" in [yY][eE][sS]|[yY])
+				true
+				;;
+			*)
+				exit 1
+				;;
+		esac
+	fi
+
+	echo "Adding all files..."
+	git add .
+
+	if [ -z "$COMMITMSG" ]; then
+		read -r -p "Commit message (Leave blank for default): " COMMITMSG
+		if [ -z "$COMMITMSG" ]; then
+			COMMITMSG="Init commit"
+		fi
+	fi
+
+	echo "Creating initial commit..."
+	git commit -am "$COMMITMSG"
+
+	if [ $PUSH ]; then
+		git push origin master
+		finish
+	else
+		finish
+	fi
+}
+
+function finish {
+	echo -e "Finished!\nTo push to your repo simply use:"
+	if [ ! $PUSH ]; then
+		\n\033[0;32mgit push origin master
+	fi
+}
+
+EXIST=$(curl -s "https://api.github.com/repos/$GH_USERNAME/$REPONAME" | grep "\"message\": \"Not Found\"")
+if [ -z "$EXIST" ]; then
+	echo "You already have a github repo called $REPONAME, exiting..."
+else
+	createRepo
+fi
