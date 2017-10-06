@@ -12,6 +12,12 @@ export GH_USERNAME=MyUsername
 export GH_ACCESS_TOKEN=1234mytoken123
 ```
 
+If you prefer not adding your token to your environment variables simply create a file called `.ghinit` in your home directory containing your information
+```
+GH_USERNAME=MyUsername
+GH_ACCESS_TOKEN=1234mytoken123
+```
+
 You can now use ghinit simply by running `ghinit` in your project directory.
 
 ```
