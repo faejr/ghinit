@@ -5,7 +5,7 @@ A simple way to perform your initial commit to github
 ghinit is a small bashscript created out of the frustration when you have to perform you initial commit, but you are in a hurry.
 
 ## Usage
-Before using ghinit you need to setup a `Personal access tokens` with the repo access level for your github account and then define the following environment variables:
+Before using ghinit you need to setup a [Personal access tokens](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/) with the repo access level for your github account and then define the following environment variables:
 
 ```
 export GH_USERNAME=MyUsername
