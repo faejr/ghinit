@@ -8,7 +8,7 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 fi
 
 if [ -e ~/.ghinit ]; then
-  . ~/.ghinit
+	. ~/.ghinit
 fi
 
 if [ -z "$GH_ACCESS_TOKEN" ] || [ -z "$GH_USERNAME" ]; then
@@ -25,43 +25,43 @@ do
 key="$1"
 
 case $key in
-    -n|--name)
-    REPONAME="$2"
-    shift
-    shift
-    ;;
-    -m|--message)
-    COMMITMSG="$2"
-    shift
-    shift
-    ;;
-    -p|--private)
-    PRIVATE="true"
-    shift
-    ;;
-    -d|--description)
-    DESC="$2"
-    shift
-    shift
-    ;;
-    -c|--commit)
-    COMMIT=TRUE
-    shift
-    ;;
-    --push)
-    PUSH=TRUE
-    shift
-    ;;
-    *)
-    POSITIONAL+=("$1")
-    shift
-    ;;
+	-n|--name)
+	REPONAME="$2"
+	shift
+	shift
+	;;
+	-m|--message)
+	COMMITMSG="$2"
+	shift
+	shift
+	;;
+	-p|--private)
+	PRIVATE="true"
+	shift
+	;;
+	-d|--description)
+	DESC="$2"
+	shift
+	shift
+	;;
+	-c|--commit)
+	COMMIT=TRUE
+	shift
+	;;
+	--push)
+	PUSH=TRUE
+	shift
+	;;
+	*)
+	POSITIONAL+=("$1")
+	shift
+	;;
 esac
 done
 set -- "${POSITIONAL[@]}"
 
 if [ -z "$REPONAME" ]; then
-    REPONAME=${PWD##*/}
+	REPONAME=${PWD##*/}
 fi
 
 function createRepo {
