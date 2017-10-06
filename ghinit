@@ -113,16 +113,15 @@ function commit {
 
 	if [ $PUSH ]; then
 		git push origin master
-		finish
-	else
-		finish
 	fi
+	
+	finish
 }
 
 function finish {
 	echo -e "Finished!"
 	if [ ! $PUSH ]; then
-		echo "To push to your repo simply use:\n\033[0;32mgit push origin master"
+		echo -e "To push to your repo simply use:\n\033[0;32mgit push origin master"
 	fi
 }
 
