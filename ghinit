@@ -109,10 +109,9 @@ function commit {
 
 	if [ $PUSH ]; then
 		git push origin master
-		finish
-	else
-		finish
 	fi
+	
+	finish
 }
 
 function finish {
