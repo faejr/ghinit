@@ -7,6 +7,10 @@ if [ "$1" = "-h" ] || [ "$1" = "--help" ]; then
 	exit 0
 fi
 
+if [ -e ~/.ghinit ]; then
+  . ~/.ghinit
+fi
+
 if [ -z "$GH_ACCESS_TOKEN" ] || [ -z "$GH_USERNAME" ]; then
 	echo "The environment variables GH_USERNAME and GH_ACCESS_TOKEN are not properly set"
 	exit 1
@@ -63,7 +67,7 @@ fi
 function createRepo {
 	echo "Setting up github repo $REPONAME..."
 
-	OUTPUT=$(curl -s -u "$GH_USERNAME:$GH_ACCESS_TOKEN" -X POST -d "{ \"name\": \"$REPONAME\", \"description\": \"$DESC\", \"private\": $PRIVATE }" https://api.github.com/user/repos)
+#	OUTPUT=$(curl -s -u "$GH_USERNAME:$GH_ACCESS_TOKEN" -X POST -d "{ \"name\": \"$REPONAME\", \"description\": \"$DESC\", \"private\": $PRIVATE }" https://api.github.com/user/repos)
 
 	SSH_URL=$(echo "$OUTPUT" | awk -F"[,:}]" '{for(i=1;i<=NF;i++){if($i~/\042'ssh_url'\042/){print $(i+1)":"$(i+2) }}}' | tr -d '" ' | sed -n 1p)
 
