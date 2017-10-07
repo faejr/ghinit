@@ -17,8 +17,8 @@ if [ -z "$GH_ACCESS_TOKEN" ] || [ -z "$GH_USERNAME" ]; then
 fi
 
 PRIVATE="false"
-COMMIT=FALSE
-PUSH=FALSE
+COMMIT="false"
+PUSH="false"
 
 while [[ $# -gt 0 ]]
 do
@@ -45,11 +45,11 @@ case $key in
 	shift
 	;;
 	-c|--commit)
-	COMMIT=TRUE
+	COMMIT="true"
 	shift
 	;;
 	--push)
-	PUSH=TRUE
+	PUSH="true"
 	shift
 	;;
 	*)
@@ -79,11 +79,15 @@ function createRepo {
 
 	git remote add origin $SSH_URL
 
-	if [ $COMMIT ]; then
+	if [ $COMMIT == "true" ]; then
 		commit
-	else
-		finish
 	fi
+
+	if [ $PUSH == "true" ]; then
+		git push origin master
+	fi
+
+	finish
 }
 
 function commit {
@@ -111,10 +115,6 @@ function commit {
 	echo "Creating initial commit..."
 	git commit -am "$COMMITMSG"
 
-	if [ $PUSH ]; then
-		git push origin master
-	fi
-	
 	finish
 }
 
