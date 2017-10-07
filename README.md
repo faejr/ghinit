@@ -25,6 +25,17 @@ Usage:
 ghinit [-cp] [-n reponame] [-d description] [-m commitmsg] [--push]
 ```
 
+The options are:
+
+Shorthand | Full | Description
+--- | --- | ---
+-c | --commit | Adds all files and commits them. Additionally warns you if there is no `.gitignore` present.
+-p | --private | Makes the Github repository a private one.
+-n | --name | Followed by a string, uses that as the name instead of the current directory name.
+-d | --description | Followed by a string, sets the Github repository description.
+-m | --message | Followed by a string, when using `-c`, sets the commit message to this message. Otherwise, defaults to `Init commit`.
+| | --push | Pushes to Github right after creating it.
+
 Example output:
 ```
 ghinit ❯ ghinit -d "A simple way to perform your initial commit to github with a single terminal command" -c --push
