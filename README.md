@@ -34,7 +34,7 @@ Shorthand | Full | Description
 -n | --name | Followed by a string, uses that as the name instead of the current directory name.
 -d | --description | Followed by a string, sets the Github repository description.
 -m | --message | Followed by a string, when using `-c`, sets the commit message to this message. Otherwise, defaults to `Init commit`.
- | --push | Pushes to Github right after creating it.
+| | --push | Pushes to Github right after creating it.
 
 Example output:
 ```
